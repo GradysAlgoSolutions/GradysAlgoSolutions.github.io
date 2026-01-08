@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Trading Tools - Open Source Python Solutions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 5%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #10b981;
+        }
+
+        .mobile-menu {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            padding-top: 80px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.1)" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,144C960,149,1056,139,1152,128C1248,117,1344,107,1392,101.3L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+            background-size: cover;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            padding: 2rem;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            opacity: 0.95;
+            animation: fadeInUp 1s ease 0.2s both;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease 0.3s both;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin: 0.5rem;
+            animation: fadeInUp 1s ease 0.4s both;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s ease 0.5s both;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: white;
+            color: #10b981;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .cta-button.secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .cta-button.secondary:hover {
+            background: white;
+            color: #10b981;
+        }
+
+        section {
+            padding: 5rem 5%;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            font-size: 1.1rem;
+        }
+
+        .about {
+            background: #f9fafb;
+        }
+
+        .about-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .about-image {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 4rem;
+        }
+
+        .about-text h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #10b981;
+        }
+
+        .about-text p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 1rem;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .tool-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+        }
+
+        .tool-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        .tool-content {
+            padding: 2rem;
+        }
+
+        .tool-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .tool-content p {
+            color: #666;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .tool-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .tag {
+            background: #e0f2f1;
+            color: #10b981;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .tool-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #10b981;
+            text-decoration: none;
+            font-weight: 600;
+            transition: gap 0.3s;
+        }
+
+        .tool-link:hover {
+            gap: 1rem;
+        }
+
+        .projects {
+            background: #f9fafb;
+        }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .project-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .project-card:hover {
+            transform: scale(1.05);
+        }
+
+        .project-image {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+        }
+
+        .project-content {
+            padding: 1.5rem;
+        }
+
+        .project-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .project-content p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .socials {
+            background: white;
+        }
+
+        .socials-container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .social-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: #333;
+            transition: transform 0.3s, color 0.3s;
+        }
+
+        .social-link:hover {
+            transform: translateY(-5px);
+            color: #10b981;
+        }
+
+        .social-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+            transition: box-shadow 0.3s;
+        }
+
+        .social-link:hover .social-icon {
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+        }
+
+        .social-name {
+            font-weight: 600;
+        }
+
+        .contact {
+            background: #f9fafb;
+        }
+
+        .contact-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .contact-info h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #10b981;
+        }
+
+        .contact-info p {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        .contact-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #10b981;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+        }
+
+        footer {
+            background: #1a1a1a;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        footer p {
+            opacity: 0.8;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero .subtitle {
+                font-size: 1.2rem;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-container {
+                grid-template-columns: 1fr;
+            }
+
+            section {
+                padding: 3rem 5%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">🐍 Free Trading Tools</div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#tools">Tools</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#socials">Socials</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <div class="mobile-menu">☰</div>
+    </nav>
+
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>Free Python Trading Tools</h1>
+            <p class="subtitle">Open Source Solutions for Beginner Traders</p>
+            <p>Empowering new traders with professional-grade tools. 100% free, forever.</p>
+            <div>
+                <span class="badge">🐍 Python</span>
+                <span class="badge">📈 Trading</span>
+                <span class="badge">💚 Open Source</span>
+                <span class="badge">🆓 Free Forever</span>
+            </div>
+            <div class="cta-buttons">
+                <a href="#tools" class="cta-button">Browse Tools</a>
+                <a href="#contact" class="cta-button secondary">Request Custom Tool</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="about" id="about">
+        <h2 class="section-title">About Me</h2>
+        <p class="section-subtitle">Passionate about democratizing trading technology</p>
+        <div class="about-content">
+            <div class="about-image">👨‍💻</div>
+            <div class="about-text">
+                <h3>Hi, I'm [Your Name]</h3>
+                <p>I'm a Python developer on a mission to make professional trading tools accessible to everyone. I believe that quality trading software shouldn't be locked behind expensive paywalls.</p>
+                <p>Every tool I create is open source, well-documented, and designed specifically for traders who are just starting their journey. Whether you need data analysis, backtesting tools, or automated indicators, I'm here to help.</p>
+                <p><strong>My Promise:</strong> All tools are free, always will be. I do this because I love coding and I love helping people succeed in trading.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="tools">
+        <h2 class="section-title">Available Tools</h2>
+        <p class="section-subtitle">Free, open-source Python solutions ready to use</p>
+        <div class="tools-grid">
+            <div class="tool-card">
+                <div class="tool-image">📊</div>
+                <div class="tool-content">
+                    <h3>Price Action Analyzer</h3>
+                    <p>Automatically identify key support/resistance levels, chart patterns, and trend analysis. Perfect for technical traders.</p>
+                    <div class="tool-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">Technical Analysis</span>
+                        <span class="tag">Free</span>
+                    </div>
+                    <a href="#" class="tool-link">View on GitHub →</a>
+                </div>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-image">🤖</div>
+                <div class="tool-content">
+                    <h3>Strategy Backtester</h3>
+                    <p>Test your trading strategies against historical data. Includes performance metrics, equity curves, and risk analysis.</p>
+                    <div class="tool-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">Backtesting</span>
+                        <span class="tag">Free</span>
+                    </div>
+                    <a href="#" class="tool-link">View on GitHub →</a>
+                </div>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-image">📉</div>
+                <div class="tool-content">
+                    <h3>Indicator Suite</h3>
+                    <p>Collection of custom indicators including RSI, MACD, Bollinger Bands, and more. Easy to integrate and customize.</p>
+                    <div class="tool-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">Indicators</span>
+                        <span class="tag">Free</span>
+                    </div>
+                    <a href="#" class="tool-link">View on GitHub →</a>
+                </div>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-image">💹</div>
+                <div class="tool-content">
+                    <h3>Data Fetcher</h3>
+                    <p>Download and organize market data from multiple sources. Supports stocks, crypto, forex, and commodities.</p>
+                    <div class="tool-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">Data</span>
+                        <span class="tag">Free</span>
+                    </div>
+                    <a href="#" class="tool-link">View on GitHub →</a>
+                </div>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-image">📱</div>
+                <div class="tool-content">
+                    <h3>Alert System</h3>
+                    <p>Get real-time notifications when your conditions are met. Supports Discord, Telegram, email, and webhooks.</p>
+                    <div class="tool-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">Alerts</span>
+                        <span class="tag">Free</span>
+                    </div>
+                    <a href="#" class="tool-link">View on GitHub →</a>
+                </div>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-image">📈</div>
+                <div class="tool-content">
+                    <h3>Portfolio Tracker</h3>
+                    <p>Track your trades, analyze performance, and calculate metrics like Sharpe ratio, max drawdown, and win rate.</p>
+                    <div class="tool-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">Portfolio</span>
+                        <span class="tag">Free</span>
+                    </div>
+                    <a href="#" class="tool-link">View on GitHub →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="projects" id="projects">
+        <h2 class="section-title">Past Projects & Results</h2>
+        <p class="section-subtitle">Real tools built for real traders</p>
+        <div class="project-grid">
+            <div class="project-card">
+                <div class="project-image">🎯</div>
+                <div class="project-content">
+                    <h3>Swing Trading Bot</h3>
+                    <p>Automated swing trading system with 68% win rate over 6 months of backtesting</p>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-image">📊</div>
+                <div class="project-content">
+                    <h3>Options Flow Scanner</h3>
+                    <p>Real-time options activity scanner that helped identify 12 major moves in Q4</p>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-image">💡</div>
+                <div class="project-content">
+                    <h3>Market Sentiment Analyzer</h3>
+                    <p>AI-powered sentiment analysis from social media and news sources</p>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-image">🔍</div>
+                <div class="project-content">
+                    <h3>Pattern Recognition Tool</h3>
+                    <p>Automatically identifies 15+ chart patterns with 85% accuracy</p>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-image">⚡</div>
+                <div class="project-content">
+                    <h3>Risk Management Dashboard</h3>
+                    <p>Real-time position sizing and risk calculation tool used by 200+ traders</p>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-image">🎨</div>
+                <div class="project-content">
+                    <h3>Custom TradingView Indicators</h3>
+                    <p>Suite of 10 Pine Script indicators with combined 5K+ downloads</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="socials" id="socials">
+        <h2 class="section-title">Connect With Me</h2>
+        <p class="section-subtitle">Follow for updates, tutorials, and new tool releases</p>
+        <div class="socials-container">
+            <div class="social-links">
+                <a href="https://github.com/yourusername" class="social-link" target="_blank">
+                    <div class="social-icon">🐙</div>
+                    <span class="social-name">GitHub</span>
+                </a>
+                <a href="https://twitter.com/yourusername" class="social-link" target="_blank">
+                    <div class="social-icon">🐦</div>
+                    <span class="social-name">Twitter</span>
+                </a>
+                <a href="https://discord.gg/yourserver" class="social-link" target="_blank">
+                    <div class="social-icon">💬</div>
+                    <span class="social-name">Discord</span>
+                </a>
+                <a href="https://youtube.com/@yourchannel" class="social-link" target="_blank">
+                    <div class="social-icon">📺</div>
+                    <span class="social-name">YouTube</span>
+                </a>
+                <a href="https://linkedin.com/in/yourprofile" class="social-link" target="_blank">
+                    <div class="social-icon">💼</div>
+                    <span class="social-name">LinkedIn</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="contact" id="contact">
+        <h2 class="section-title">Get In Touch</h2>
+        <p class="section-subtitle">Request a custom tool or just say hello</p>
+        <div class="contact-container">
+            <div class="contact-info">
+                <h3>Let's Build Something</h3>
+                <p>Have an idea for a trading tool? Need help with Python? Want to collaborate on a project? I'm always excited to help beginner traders succeed.</p>
+                <p><strong>📧 Email:</strong> your.email@example.com</p>
+                <p><strong>⏱️ Response Time:</strong> Usually within 24-48 hours</p>
+                <p><strong>💚 All services are 100% free</strong></p>
+            </div>
+            <form class="contact-form" onsubmit="handleSubmit(event)">
+                <div class="form-group">
+                    <label for="name">Name *</label>
+                    <input type="text" id="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="type">Request Type *</label>
+                    <select id="type" required>
+                        <option value="">Select one...</option>
+                        <option value="custom">Custom Tool Request</option>
+                        <option value="help">Help with Existing Tool</option>
+                        <option value="bug">Report a Bug</option>
+                        <option value="collaboration">Collaboration</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message *</label>
+                    <textarea id="message" required placeholder="Describe your idea or question in detail..."></textarea>
+                </div>
+                <button type="submit" class="submit-button">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <p>🐍 Free Trading Tools - Open Source Python Solutions for Beginner Traders</p>
+        <p>&copy; 2024 All tools are free and open source. Made with 💚 for the trading community.</p>
+    </footer>
+
+    <script>
+        function handleSubmit(event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const type = document.getElementById('type').value;
+            alert(`Thank you ${name}! I've received your ${type.replace('-', ' ')} request and will get back to you within 24-48 hours.`);
+            event.target.reset();
+        }
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        const mobileMenu = document.querySelector('.mobile-menu');
+        const navLinks = document.querySelector('.nav-links');
+        
+        mobileMenu.addEventListener('click', () => {
+            navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+        });
+    </script>
+</body>
+</html>
